@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>doc-engine Documentation — Open-Source Document Layout & Vector PDF Engine for React & TypeScript</title>
+  <meta name="description" content="Official developer documentation for doc-engine: the headless document layout & vector rendering engine for React and TypeScript that produces searchable, crisp vector PDFs with zero Python, zero Puppeteer, and zero screenshots.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --primary-glow: rgba(2, 132, 199, 0.15);
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --code-bg: #0b1120;
+      --sidebar-width: 290px;
+      --header-height: 64px;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--slate-800);
+      background: #ffffff;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Header */
+    header.site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-height);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 100;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--slate-900);
+    }
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .brand-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .badge-version {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 4px;
+    }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .header-link {
+      color: var(--slate-600);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: color 0.15s;
+    }
+    .header-link:hover { color: var(--primary); }
+    .btn-github {
+      background: var(--slate-900);
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-github:hover { background: var(--slate-700); }
+
+    /* Layout Frame */
+    .docs-layout {
+      display: flex;
+      margin-top: var(--header-height);
+    }
+
+    /* Sidebar Navigation */
+    aside.sidebar {
+      width: var(--sidebar-width);
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      padding: 24px 16px 40px 24px;
+      border-right: 1px solid var(--slate-200);
+      background: var(--slate-50);
+      scrollbar-width: thin;
+    }
+    .search-box {
+      width: 100%;
+      padding: 9px 14px;
+      border: 1px solid var(--slate-300);
+      border-radius: 6px;
+      background: #ffffff;
+      font-size: 0.88rem;
+      margin-bottom: 20px;
+      font-family: inherit;
+      outline: none;
+    }
+    .search-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    .sidebar-category {
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-400);
+      margin: 22px 0 8px 8px;
+    }
+    .sidebar-category:first-of-type { margin-top: 4px; }
+    .sidebar-menu { list-style: none; }
+    .sidebar-item a {
+      display: block;
+      padding: 6px 12px;
+      color: var(--slate-600);
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+    .sidebar-item a:hover {
+      background: var(--slate-200);
+      color: var(--slate-900);
+    }
+    .sidebar-item.active a {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    /* Main Content Area */
+    main.content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      max-width: 1020px;
+      padding: 48px 64px 100px 64px;
+    }
+
+    /* Typography & Headings */
+    h1, h2, h3, h4 { color: var(--slate-900); font-weight: 800; letter-spacing: -0.02em; }
+    h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 16px; }
+    h2 { font-size: 1.75rem; line-height: 1.3; margin-top: 54px; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px solid var(--slate-200); }
+    h3 { font-size: 1.28rem; line-height: 1.4; margin-top: 36px; margin-bottom: 14px; }
+    h4 { font-size: 1.05rem; margin-top: 24px; margin-bottom: 8px; color: var(--slate-800); }
+    p { margin-bottom: 18px; color: var(--slate-700); font-size: 1.02rem; }
+    ul, ol { margin-left: 24px; margin-bottom: 20px; color: var(--slate-700); }
+    li { margin-bottom: 8px; }
+    strong { color: var(--slate-900); }
+
+    .lead-text {
+      font-size: 1.22rem;
+      color: var(--slate-600);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* Feature Cards Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin: 32px 0;
+    }
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .feature-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      border-color: var(--slate-300);
+    }
+    .feature-icon {
+      font-size: 24px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .feature-title {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 6px;
+    }
+    .feature-desc {
+      font-size: 0.92rem;
+      color: var(--slate-600);
+      margin-bottom: 0;
+    }
+
+    /* Code Blocks */
+    .code-container {
+      position: relative;
+      background: var(--code-bg);
+      border-radius: 8px;
+      margin: 20px 0 26px 0;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--slate-400);
+    }
+    .code-lang-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-copy:hover { background: rgba(255, 255, 255, 0.2); }
+    pre {
+      padding: 18px 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+    code { font-family: var(--font-mono); }
+    p code, li code, td code {
+      background: var(--slate-100);
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid var(--slate-200);
+    }
+
+    /* Token Syntax Highlighting */
+    .token-keyword { color: #f472b6; font-weight: 600; }
+    .token-string { color: #38bdf8; }
+    .token-comment { color: #64748b; font-style: italic; }
+    .token-function { color: #818cf8; }
+    .token-tag { color: #4ade80; }
+    .token-attr { color: #fbbf24; }
+
+    /* Callout Boxes */
+    .callout {
+      display: flex;
+      gap: 16px;
+      padding: 18px 20px;
+      border-radius: 8px;
+      margin: 24px 0;
+      border-left: 4px solid;
+    }
+    .callout-info { background: #f0f9ff; border-color: #0284c7; color: #0369a1; }
+    .callout-tip { background: #f0fdf4; border-color: #16a34a; color: #15803d; }
+    .callout-warning { background: #fffbeb; border-color: #f59e0b; color: #b45309; }
+    .callout-icon { font-size: 20px; line-height: 1; margin-top: 2px; }
+    .callout-content { font-size: 0.95rem; line-height: 1.55; }
+    .callout-title { font-weight: 700; margin-bottom: 4px; color: inherit; }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin: 24px 0 32px 0;
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+    }
+    table.doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      text-align: left;
+    }
+    table.doc-table th {
+      background: var(--slate-100);
+      color: var(--slate-900);
+      font-weight: 700;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+    table.doc-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--slate-200);
+      color: var(--slate-700);
+    }
+    table.doc-table tr:last-child td { border-bottom: none; }
+    table.doc-table tr:nth-child(even) { background: var(--slate-50); }
+
+    /* Diagram Box */
+    .diagram-box {
+      background: var(--slate-900);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 24px;
+      border-radius: 8px;
+      line-height: 1.5;
+      overflow-x: auto;
+      margin: 24px 0;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    /* Template Cards */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin: 28px 0;
+    }
+    .gallery-card {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: 8px;
+      padding: 18px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .gallery-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 16px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+    .gallery-badge { font-size: 28px; margin-bottom: 10px; }
+    .gallery-title { font-weight: 700; font-size: 1rem; color: var(--slate-900); margin-bottom: 4px; }
+    .gallery-meta { font-size: 0.82rem; color: var(--slate-500); }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      aside.sidebar { display: none; }
+      main.content { margin-left: 0; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <a href="#introduction" class="brand-group">
+      <div class="brand-logo">D</div>
+      <span class="brand-name">doc-engine</span>
+      <span class="badge-version">v0.1.0</span>
+    </a>
+    <div class="header-links">
+      <a href="#quickstart-react" class="header-link">React</a>
+      <a href="#architecture" class="header-link">Architecture</a>
+      <a href="#template-invoice" class="header-link">Templates</a>
+      <a href="#api-reference" class="header-link">API Ref</a>
+      <a href="https://github.com" target="_blank" class="btn-github">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="docs-layout">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <input type="text" class="search-box" placeholder="Filter documentation..." id="searchBox" onkeyup="filterMenu()">
+
+      <div class="sidebar-category">Overview</div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item active"><a href="#introduction">Introduction</a></li>
+        <li class="sidebar-item"><a href="#why-doc-engine">Why doc-engine?</a></li>
+        <li class="sidebar-item"><a href="#architecture">Architecture</a></li>
+        <li class="sidebar-item"><a href="#installation">Installation</a></li>
+      </ul>
+
+      <div class="sidebar-category">Quickstart</div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item"><a href="#quickstart-node">Node.js / TypeScript</a></li>
+        <li class="sidebar-item"><a href="#quickstart-react">React JSX Workflow</a></li>
+        <li class="sidebar-item"><a href="#quickstart-serverless">Next.js & Serverless API</a></li>
+      </ul>
+
+      <div class="sidebar-category">Layout & Flow Engine</div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item"><a href="#containers">Containers & Views</a></li>
+        <li class="sidebar-item"><a href="#text-flow">Text Flow & Typography</a></li>
+        <li class="sidebar-item"><a href="#flexbox">Flex Layouts (Row / Column)</a></li>
+        <li class="sidebar-item"><a href="#grids">Grids Layout</a></li>
+        <li class="sidebar-item"><a href="#tables">Tables with Zebra Striping</a></li>
+        <li class="sidebar-item"><a href="#pagination">Auto-Pagination</a></li>
+        <li class="sidebar-item"><a href="#headers-footers">Dynamic Headers & Footers</a></li>
+        <li class="sidebar-item"><a href="#constraints">Layout & Break Constraints</a></li>
+      </ul>
+
+      <div class="sidebar-category">React Package</div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item"><a href="#react-components">JSX Component Reference</a></li>
+        <li class="sidebar-item"><a href="#react-hooks">Hooks (usePDF, useDocument)</a></li>
+        <li class="sidebar-item"><a href="#react-viewer">DocumentViewer Component</a></li>
+      </ul>
+
+      <div class="sidebar-category">Document Templates</div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item"><a href="#template-invoice">Commercial Invoice</a></li>
+        <li class="sidebar-item"><a href="#template-certificate">Award Certificate</a></li>
+        <li class="sidebar-item"><a href="#template-report">Executive Business Report</a></li>
+        <li class="sidebar-item"><a href="#template-resume">Modern Tech Resume</a></li>
+      </ul>
+
+      <div class="sidebar-category">Comparison & Reference</div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item"><a href="#comparison">Comparison Matrix</a></li>
+        <li class="sidebar-item"><a href="#api-reference">Full API Reference</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <!-- 1. Introduction -->
+      <section id="introduction">
+        <h1>doc-engine Documentation</h1>
+        <p class="lead-text">
+          A headless document layout and vector rendering engine for <strong>React</strong> and <strong>TypeScript</strong> that compiles directly to real, searchable PDFs. Zero Python backend, zero Puppeteer headless browsers, zero screenshots.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">Pure TypeScript & JS</div>
+            <p class="feature-desc">Runs anywhere: Browser, Web Workers, Node.js, Next.js API Routes, Vercel Edge, and Cloudflare Workers.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <div class="feature-title">Real Vector PDFs</div>
+            <p class="feature-desc">Infinite vector sharpness at 1,000% zoom. Text is 100% searchable, selectable, and screen-reader accessible.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📐</div>
+            <div class="feature-title">Dual Coordinate Ergonomics</div>
+            <p class="feature-desc">Code using web Top-Left (0,0) coordinates or native PDF Bottom-Left (0,0) coordinates with automatic transforms.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🚀</div>
+            <div class="feature-title">60 FPS Live Previews</div>
+            <p class="feature-desc">Dual renderer renders directly to HTML5 Canvas in &lt; 5ms for smooth live editing without recompiling binary PDF blobs.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Tables, Grids & Flexbox</div>
+            <p class="feature-desc">First-class primitives for itemized tables, auto column sizing, 2D grids, and flex row/column stacks.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📑</div>
+            <div class="feature-title">Auto-Pagination & Rules</div>
+            <p class="feature-desc">Automatic multi-page splitting, repeating headers/footers, and print constraints like <code>keepWithNext</code>.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Why doc-engine? -->
+      <section id="why-doc-engine">
+        <h2>Why doc-engine?</h2>
+        <p>
+          Most document generators in web development suffer from severe architectural trade-offs:
+        </p>
+        <ul>
+          <li><strong>Heavy Server Runtimes (Python / ReportLab / Puppeteer)</strong>: Require 500MB+ Docker images, multi-language stacks, slow cold-starts, and expensive server infrastructure.</li>
+          <li><strong>DOM Screenshot Tools (html2pdf, html2canvas)</strong>: Convert pages into blurry raster images. Text cannot be selected or searched, and files balloon to 5MB–15MB.</li>
+          <li><strong>React-Locked Libraries (@react-pdf/renderer)</strong>: Cannot be used in plain Node.js scripts or CLI tools, and compiling binary PDF blobs on every keystroke causes noticeable UI lag.</li>
+        </ul>
+
+        <p>
+          <strong>doc-engine</strong> solves this by treating the <strong>Document AST and Layout Engine as the main core product</strong>. It decouples document representation from rendering targets, outputting to native vector PDFs via <code>pdf-lib</code>, instant HTML5 Canvas previews, or SVG graphics.
+        </p>
+      </section>
+
+      <!-- 3. Architecture -->
+      <section id="architecture">
+        <h2>Architecture & Core Engine</h2>
+        <p>
+          The engine is built around a pure, serializable JSON Document AST (Abstract Syntax Tree). The layout pipeline processes text measurement, auto-layout flow, and page pagination before handing the calculated frame tree to any renderer.
+        </p>
+
+        <div class="diagram-box">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      DOCUMENT SPECIFICATION                             │
+│      React JSX (<Document>)  OR  Fluent API (createDocument())          │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          JSON AST SPECIFICATION                         │
+│   DocumentDefinition -> Pages -> Views / Text / Tables / Shapes / Grid  │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                            LAYOUT ENGINE                                │
+│  Text Wrap (AFM) ──► Flex / Grid Calculation ──► Table Column Auto-Size  │
+│                                    │                                    │
+│                     Pagination & Constraints Split                      │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         PLUGGABLE RENDERERS                             │
+├──────────────────────────┬──────────────────────────┬───────────────────┤
+│    PdfRenderer (Vector)  │ CanvasRenderer (60 FPS)  │ SvgRenderer (DOM) │
+└──────────────────────────┴──────────────────────────┴───────────────────┘
+        </div>
+
+        <h3>Key Architectural Principles</h3>
+        <ul>
+          <li><strong>Zero Native Dependencies</strong>: 100% pure TypeScript/JavaScript. No C++ native bindings, no Cairo, no node-gyp.</li>
+          <li><strong>Top-Left Origin Transform</strong>: Native PDF graphics use Bottom-Left (0,0). <code>doc-engine</code> transforms coordinates automatically: <code>Y_pdf = pageHeight - Y_screen - elementHeight</code>.</li>
+          <li><strong>AFM Font Metrics Cache</strong>: Precise line breaking and text width calculation using Standard 14 PostScript font metric tables.</li>
+        </ul>
+      </section>
+
+      <!-- 4. Installation -->
+      <section id="installation">
+        <h2>Installation</h2>
+        <p>Install <code>doc-engine</code> and its peer dependency <code>pdf-lib</code> via npm, pnpm, or yarn:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span class="code-lang-badge">Terminal (Bash)</span>
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>npm install doc-engine pdf-lib</code></pre>
+        </div>
+
+        <p>If you are using React components or hooks, install React dependencies:</p>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span class="code-lang-badge">Terminal (Bash)</span>
+            <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><code>npm install doc-engine pdf-lib react react-dom</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-content">
+            <div class="callout-title">Zero Native Compilers Needed</div>
+            <code>doc-engine</code> runs seamlessly on Node.js 18+, Next.js, Web Workers, Vercel Serverless/Edge functions, and browser clients.
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Quickstart -->
+      <section id="quickstart">
+        <h2>Quickstart Guides</h2>
+
+        <!-- Node.js Quickstart -->
+        <div id="quickstart-node">
+          <h3>1. Pure TypeScript / Node.js Backend Workflow</h3>
+          <p>Create and export a PDF document from a Node.js script, Express API endpoint, or background job worker:</p>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript (generate-invoice.ts)</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { createDocument, PdfRenderer } <span class="token-keyword">from</span> <span class="token-string">'doc-engine'</span>;
+<span class="token-keyword">import</span> fs <span class="token-keyword">from</span> <span class="token-string">'node:fs/promises'</span>;
+
+<span class="token-keyword">async function</span> <span class="token-function">generateInvoice</span>() {
+  <span class="token-comment">// 1. Initialize fluent document builder</span>
+  <span class="token-keyword">const</span> doc = <span class="token-function">createDocument</span>({
+    defaultPageSize: <span class="token-string">'letter'</span>,
+    coordinateOrigin: <span class="token-string">'top-left'</span>,
+    metadata: { title: <span class="token-string">'Invoice #INV-2026-001'</span>, author: <span class="token-string">'Acme Inc'</span> },
+  });
+
+  <span class="token-comment">// 2. Add header banner shape</span>
+  doc.<span class="token-function">addShape</span>({
+    shapeType: <span class="token-string">'rectangle'</span>,
+    x: 40, y: 40, width: 532, height: 60,
+    fillColor: <span class="token-string">'#0f172a'</span>, borderRadius: 6,
+  });
+
+  doc.<span class="token-function">addText</span>({
+    text: <span class="token-string">'ACME SOFTWARE INC.'</span>,
+    x: 60, y: 58, fontSize: 18, fontWeight: <span class="token-string">'bold'</span>, color: <span class="token-string">'#ffffff'</span>,
+  });
+
+  <span class="token-comment">// 3. Add itemized table</span>
+  doc.<span class="token-function">addTable</span>({
+    x: 40, y: 130, width: 532,
+    columns: [<span class="token-string">'3fr'</span>, <span class="token-string">'1fr'</span>, <span class="token-string">'1fr'</span>],
+    zebra: <span class="token-keyword">true</span>,
+    header: {
+      cells: [
+        { content: <span class="token-string">'Description'</span>, fontWeight: <span class="token-string">'bold'</span> },
+        { content: <span class="token-string">'Quantity'</span>, align: <span class="token-string">'center'</span>, fontWeight: <span class="token-string">'bold'</span> },
+        { content: <span class="token-string">'Price'</span>, align: <span class="token-string">'right'</span>, fontWeight: <span class="token-string">'bold'</span> },
+      ],
+    },
+    rows: [
+      { cells: [{ content: <span class="token-string">'Cloud Architecture'</span> }, { content: <span class="token-string">'20'</span>, align: <span class="token-string">'center'</span> }, { content: <span class="token-string">'$3,000.00'</span>, align: <span class="token-string">'right'</span> }] },
+      { cells: [{ content: <span class="token-string">'Engine Integration'</span> }, { content: <span class="token-string">'10'</span>, align: <span class="token-string">'center'</span> }, { content: <span class="token-string">'$1,500.00'</span>, align: <span class="token-string">'right'</span> }] },
+    ],
+  });
+
+  <span class="token-comment">// 4. Render to real vector PDF bytes</span>
+  <span class="token-keyword">const</span> pdfBytes = <span class="token-keyword">await</span> PdfRenderer.<span class="token-function">renderToBytes</span>(doc.<span class="token-function">toDefinition</span>());
+  <span class="token-keyword">await</span> fs.<span class="token-function">writeFile</span>(<span class="token-string">'invoice.pdf'</span>, pdfBytes);
+}
+
+<span class="token-function">generateInvoice</span>();</code></pre>
+          </div>
+        </div>
+
+        <!-- React Quickstart -->
+        <div id="quickstart-react">
+          <h3>2. Declarative React JSX Workflow</h3>
+          <p>Compose documents with React components and trigger instant client-side PDF downloads using the <code>usePDF</code> hook:</p>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx (InvoiceViewer.tsx)</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> React <span class="token-keyword">from</span> <span class="token-string">'react'</span>;
+<span class="token-keyword">import</span> { Document, Page, View, Text, usePDF } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/react'</span>;
+
+<span class="token-keyword">export function</span> <span class="token-function">InvoiceComponent</span>() {
+  <span class="token-keyword">const</span> invoiceDoc = (
+    <span class="token-tag">&lt;Document</span> <span class="token-attr">defaultPageSize</span>=<span class="token-string">"letter"</span><span class="token-tag">&gt;</span>
+      <span class="token-tag">&lt;Page</span> <span class="token-attr">backgroundColor</span>=<span class="token-string">"#ffffff"</span><span class="token-tag">&gt;</span>
+        <span class="token-tag">&lt;View</span> <span class="token-attr">x</span>={40} <span class="token-attr">y</span>={40} <span class="token-attr">width</span>={532} <span class="token-attr">height</span>={70} <span class="token-attr">backgroundColor</span>=<span class="token-string">"#0f172a"</span> <span class="token-attr">borderRadius</span>={6} <span class="token-attr">padding</span>={16}<span class="token-tag">&gt;</span>
+          <span class="token-tag">&lt;Text</span> <span class="token-attr">fontSize</span>={22} <span class="token-attr">fontWeight</span>=<span class="token-string">"bold"</span> <span class="token-attr">color</span>=<span class="token-string">"#ffffff"</span><span class="token-tag">&gt;</span>ACME CORP<span class="token-tag">&lt;/Text&gt;</span>
+          <span class="token-tag">&lt;Text</span> <span class="token-attr">fontSize</span>={12} <span class="token-attr">color</span>=<span class="token-string">"#38bdf8"</span><span class="token-tag">&gt;</span>INVOICE #INV-2026-001<span class="token-tag">&lt;/Text&gt;</span>
+        <span class="token-tag">&lt;/View&gt;</span>
+
+        <span class="token-tag">&lt;Text</span> <span class="token-attr">x</span>={40} <span class="token-attr">y</span>={135} <span class="token-attr">width</span>={400} <span class="token-attr">fontSize</span>={12} <span class="token-attr">color</span>=<span class="token-string">"#334155"</span><span class="token-tag">&gt;</span>
+          Due Date: October 15, 2026
+        <span class="token-tag">&lt;/Text&gt;</span>
+
+        <span class="token-tag">&lt;Text</span> <span class="token-attr">x</span>={40} <span class="token-attr">y</span>={170} <span class="token-attr">fontSize</span>={16} <span class="token-attr">fontWeight</span>=<span class="token-string">"bold"</span> <span class="token-attr">color</span>=<span class="token-string">"#0f172a"</span><span class="token-tag">&gt;</span>
+          Amount Due: $4,500.00
+        <span class="token-tag">&lt;/Text&gt;</span>
+      <span class="token-tag">&lt;/Page&gt;</span>
+    <span class="token-tag">&lt;/Document&gt;</span>
+  );
+
+  <span class="token-keyword">const</span> { dataUrl, loading, download } = <span class="token-function">usePDF</span>(invoiceDoc);
+
+  <span class="token-keyword">return</span> (
+    <span class="token-tag">&lt;div&gt;</span>
+      <span class="token-tag">&lt;button</span> <span class="token-attr">onClick</span>={() =&gt; <span class="token-function">download</span>(<span class="token-string">'invoice.pdf'</span>)} <span class="token-attr">disabled</span>={loading}<span class="token-tag">&gt;</span>
+        {loading ? <span class="token-string">'Compiling PDF...'</span> : <span class="token-string">'Download Real PDF'</span>}
+      <span class="token-tag">&lt;/button&gt;</span>
+      {dataUrl && <span class="token-tag">&lt;iframe</span> <span class="token-attr">src</span>={dataUrl} <span class="token-attr">style</span>={{ width: <span class="token-string">'100%'</span>, height: <span class="token-string">'600px'</span> }} <span class="token-tag">/&gt;</span>}
+    <span class="token-tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- Next.js Quickstart -->
+        <div id="quickstart-serverless">
+          <h3>3. Next.js App Router (Serverless Route Handler)</h3>
+          <p>Generate streamable PDFs on demand in Next.js without running heavy headless browsers:</p>
+
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript (app/api/invoice/route.ts)</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { NextResponse } <span class="token-keyword">from</span> <span class="token-string">'next/server'</span>;
+<span class="token-keyword">import</span> { createInvoiceDocument } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/examples'</span>;
+<span class="token-keyword">import</span> { PdfRenderer } <span class="token-keyword">from</span> <span class="token-string">'doc-engine'</span>;
+
+<span class="token-keyword">export async function</span> <span class="token-function">POST</span>(req: Request) {
+  <span class="token-keyword">const</span> body = <span class="token-keyword">await</span> req.<span class="token-function">json</span>();
+  <span class="token-keyword">const</span> invoiceDoc = <span class="token-function">createInvoiceDocument</span>(body);
+  <span class="token-keyword">const</span> pdfBytes = <span class="token-keyword">await</span> PdfRenderer.<span class="token-function">renderToBytes</span>(invoiceDoc);
+
+  <span class="token-keyword">return new</span> <span class="token-function">NextResponse</span>(pdfBytes, {
+    headers: {
+      <span class="token-string">'Content-Type'</span>: <span class="token-string">'application/pdf'</span>,
+      <span class="token-string">'Content-Disposition'</span>: <span class="token-string">'attachment; filename="invoice.pdf"'</span>,
+    },
+  });
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Layout & Flow Engine -->
+      <section id="layout">
+        <h2>Layout & Flow Engine Details</h2>
+
+        <!-- Containers -->
+        <div id="containers">
+          <h3>Containers & Views (<code>&lt;View&gt;</code>)</h3>
+          <p>Containers define precise bounding boxes, background fills, borders, padding, and rounded corners:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-tag">&lt;View</span>
+  <span class="token-attr">x</span>={40} <span class="token-attr">y</span>={50} <span class="token-attr">width</span>={500} <span class="token-attr">height</span>={120}
+  <span class="token-attr">backgroundColor</span>=<span class="token-string">"#f8fafc"</span>
+  <span class="token-attr">borderColor</span>=<span class="token-string">"#cbd5e1"</span>
+  <span class="token-attr">borderWidth</span>={1}
+  <span class="token-attr">borderRadius</span>={8}
+  <span class="token-attr">padding</span>={[12, 16]}
+<span class="token-tag">&gt;</span>
+  <span class="token-comment">{/* Nested view or text content */}</span>
+<span class="token-tag">&lt;/View&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Text Flow -->
+        <div id="text-flow">
+          <h3>Text Flow & Typography</h3>
+          <p>
+            Text wrapping strictly respects container <code>maxWidth</code> using built-in font metrics (AFM tables). Unbroken strings (such as long URLs) are split using an $O(\log N)$ binary search character fitting algorithm so they never clip or overflow margins:
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-tag">&lt;Text</span>
+  <span class="token-attr">width</span>={450}
+  <span class="token-attr">fontSize</span>={12}
+  <span class="token-attr">lineHeight</span>={1.45}
+  <span class="token-attr">letterSpacing</span>={0.2}
+  <span class="token-attr">color</span>=<span class="token-string">"#334155"</span>
+  <span class="token-attr">align</span>=<span class="token-string">"justify"</span>
+  <span class="token-attr">maxLines</span>={5}
+<span class="token-tag">&gt;</span>
+  Your long paragraph flows here across multiple lines automatically...
+<span class="token-tag">&lt;/Text&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Flexbox -->
+        <div id="flexbox">
+          <h3>Flex Layouts (Row / Column)</h3>
+          <p>Position items sequentially with automatic spacing gaps, padding, and cross-axis alignments:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-tag">&lt;View</span> <span class="token-attr">layout</span>=<span class="token-string">"flex"</span> <span class="token-attr">flexDirection</span>=<span class="token-string">"row"</span> <span class="token-attr">gap</span>={16} <span class="token-attr">alignItems</span>=<span class="token-string">"center"</span><span class="token-tag">&gt;</span>
+  <span class="token-tag">&lt;Shape</span> <span class="token-attr">shapeType</span>=<span class="token-string">"circle"</span> <span class="token-attr">width</span>={36} <span class="token-attr">height</span>={36} <span class="token-attr">fillColor</span>=<span class="token-string">"#0284c7"</span> <span class="token-tag">/&gt;</span>
+  <span class="token-tag">&lt;View</span> <span class="token-attr">layout</span>=<span class="token-string">"flex"</span> <span class="token-attr">flexDirection</span>=<span class="token-string">"column"</span> <span class="token-attr">gap</span>={4}<span class="token-tag">&gt;</span>
+    <span class="token-tag">&lt;Text</span> <span class="token-attr">fontSize</span>={13} <span class="token-attr">fontWeight</span>=<span class="token-string">"bold"</span><span class="token-tag">&gt;</span>Alex Turner<span class="token-tag">&lt;/Text&gt;</span>
+    <span class="token-tag">&lt;Text</span> <span class="token-attr">fontSize</span>={10} <span class="token-attr">color</span>=<span class="token-string">"#64748b"</span><span class="token-tag">&gt;</span>Staff Architect<span class="token-tag">&lt;/Text&gt;</span>
+  <span class="token-tag">&lt;/View&gt;</span>
+<span class="token-tag">&lt;/View&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Grids -->
+        <div id="grids">
+          <h3>Grid Layouts</h3>
+          <p>Arrange items in multi-column grids with 2D gaps (row gap and column gap):</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-tag">&lt;Grid</span> <span class="token-attr">columns</span>={3} <span class="token-attr">gap</span>={[12, 16]} <span class="token-attr">width</span>={532}<span class="token-tag">&gt;</span>
+  <span class="token-tag">&lt;Card</span> <span class="token-attr">title</span>=<span class="token-string">"Revenue"</span> <span class="token-attr">value</span>=<span class="token-string">"$42.8M"</span> <span class="token-tag">/&gt;</span>
+  <span class="token-tag">&lt;Card</span> <span class="token-attr">title</span>=<span class="token-string">"Gross Margin"</span> <span class="token-attr">value</span>=<span class="token-string">"76.4%"</span> <span class="token-tag">/&gt;</span>
+  <span class="token-tag">&lt;Card</span> <span class="token-attr">title</span>=<span class="token-string">"Active Users"</span> <span class="token-attr">value</span>=<span class="token-string">"1.2M"</span> <span class="token-tag">/&gt;</span>
+<span class="token-tag">&lt;/Grid&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Tables -->
+        <div id="tables">
+          <h3>Tables with Zebra Striping</h3>
+          <p>First-class table elements supporting fractional column definitions (e.g. <code>['2fr', 80, 100]</code>), zebra background striping, padding, and cell align:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-tag">&lt;Table</span>
+  <span class="token-attr">width</span>={532}
+  <span class="token-attr">columns</span>={[<span class="token-string">'3fr'</span>, <span class="token-string">'1fr'</span>, <span class="token-string">'1fr'</span>]}
+  <span class="token-attr">zebra</span>={<span class="token-keyword">true</span>}
+  <span class="token-attr">header</span>={{
+    cells: [
+      { content: <span class="token-string">'Item'</span>, fontWeight: <span class="token-string">'bold'</span> },
+      { content: <span class="token-string">'Quantity'</span>, align: <span class="token-string">'center'</span>, fontWeight: <span class="token-string">'bold'</span> },
+      { content: <span class="token-string">'Price'</span>, align: <span class="token-string">'right'</span>, fontWeight: <span class="token-string">'bold'</span> },
+    ],
+  }}
+  <span class="token-attr">rows</span>={[
+    { cells: [{ content: <span class="token-string">'Enterprise License'</span> }, { content: <span class="token-string">'1'</span>, align: <span class="token-string">'center'</span> }, { content: <span class="token-string">'$12,000.00'</span>, align: <span class="token-string">'right'</span> }] },
+    { cells: [{ content: <span class="token-string">'Support SLA'</span> }, { content: <span class="token-string">'12'</span>, align: <span class="token-string">'center'</span> }, { content: <span class="token-string">'$3,600.00'</span>, align: <span class="token-string">'right'</span> }] },
+  ]}
+<span class="token-tag">/&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <!-- Auto-Pagination -->
+        <div id="pagination">
+          <h3>Auto-Pagination Engine</h3>
+          <p>
+            When flow content exceeds printable height, the engine splits content across multiple pages automatically while observing document margins.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { paginateElements } <span class="token-keyword">from</span> <span class="token-string">'doc-engine'</span>;
+
+<span class="token-keyword">const</span> pages = <span class="token-function">paginateElements</span>({
+  elements: flowElementsList,
+  pageWidth: 612,
+  pageHeight: 792,
+  margins: { top: 40, bottom: 40, left: 40, right: 40 },
+  repeatHeadersAndFooters: <span class="token-keyword">true</span>,
+});</code></pre>
+          </div>
+        </div>
+
+        <!-- Dynamic Headers & Footers -->
+        <div id="headers-footers">
+          <h3>Dynamic Headers & Footers</h3>
+          <p>
+            Bind running headers and footers to every page with automatic page numbering macros <code>{pageNumber}</code> and <code>{totalPages}</code>:
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">const</span> doc = <span class="token-function">createDocument</span>({
+  defaultPageSize: <span class="token-string">'letter'</span>,
+  headerElement: {
+    type: <span class="token-string">'text'</span>,
+    text: <span class="token-string">'Confidential Business Report'</span>,
+    x: 40, y: 20, fontSize: 9, color: <span class="token-string">'#94a3b8'</span>,
+  },
+  footerElement: {
+    type: <span class="token-string">'text'</span>,
+    text: <span class="token-string">'Page {pageNumber} of {totalPages}'</span>,
+    x: 40, y: 760, fontSize: 9, align: <span class="token-string">'center'</span>, color: <span class="token-string">'#94a3b8'</span>,
+  },
+});</code></pre>
+          </div>
+        </div>
+
+        <!-- Layout Constraints -->
+        <div id="constraints">
+          <h3>Layout & Page Break Constraints</h3>
+          <p>Fine-tune print flow using standard pagination constraints:</p>
+          <div class="table-wrapper">
+            <table class="doc-table">
+              <thead>
+                <tr>
+                  <th>Constraint Property</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>pageBreakBefore</code></td>
+                  <td><code>boolean</code></td>
+                  <td>Forces a page break immediately prior to rendering this element.</td>
+                </tr>
+                <tr>
+                  <td><code>pageBreakAfter</code></td>
+                  <td><code>boolean</code></td>
+                  <td>Forces a page break immediately after rendering this element.</td>
+                </tr>
+                <tr>
+                  <td><code>pageBreakInside</code></td>
+                  <td><code>'auto' \| 'avoid'</code></td>
+                  <td>Pushes the entire element to the next page if it doesn't fit completely on the current page.</td>
+                </tr>
+                <tr>
+                  <td><code>keepWithNext</code></td>
+                  <td><code>boolean</code></td>
+                  <td>Prevents a section header from being orphaned at the bottom of a page without its subsequent content.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. React Package Reference -->
+      <section id="react-package">
+        <h2>React Package Reference (<code>doc-engine/react</code>)</h2>
+        <p>
+          The <code>doc-engine/react</code> package provides declarative JSX components, hooks, and preview components built on top of the core engine.
+        </p>
+
+        <!-- JSX Component Reference -->
+        <div id="react-components">
+          <h3>JSX Component Reference</h3>
+          
+          <h4>1. <code>&lt;Document&gt;</code></h4>
+          <p>Root container for a multi-page document.</p>
+          <div class="table-wrapper">
+            <table class="doc-table">
+              <thead>
+                <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>defaultPageSize</code></td><td><code>'letter' \| 'a4' \| 'legal'</code></td><td><code>'letter'</code></td><td>Default page dimensions for child pages.</td></tr>
+                <tr><td><code>coordinateOrigin</code></td><td><code>'top-left' \| 'bottom-left'</code></td><td><code>'top-left'</code></td><td>Coordinate space standard.</td></tr>
+                <tr><td><code>metadata</code></td><td><code>DocumentMetadata</code></td><td><code>{}</code></td><td>PDF author, title, and keywords.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>2. <code>&lt;Page&gt;</code></h4>
+          <p>Represents a single printable page canvas.</p>
+          <div class="table-wrapper">
+            <table class="doc-table">
+              <thead>
+                <tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>size</code></td><td><code>'letter' \| 'a4' \| [width, height]</code></td><td><code>'letter'</code></td><td>Page dimensions.</td></tr>
+                <tr><td><code>orientation</code></td><td><code>'portrait' \| 'landscape'</code></td><td><code>'portrait'</code></td><td>Page orientation.</td></tr>
+                <tr><td><code>backgroundColor</code></td><td><code>string</code></td><td><code>'#ffffff'</code></td><td>Background color fill.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>3. <code>&lt;View&gt;</code></h4>
+          <p>Container element supporting layout positioning, padding, and styling.</p>
+
+          <h4>4. <code>&lt;Text&gt;</code></h4>
+          <p>Text block primitive with automatic wrapping, font sizing, line height, and alignment.</p>
+        </div>
+
+        <!-- React Hooks -->
+        <div id="react-hooks">
+          <h3>React Hooks (<code>usePDF</code>, <code>useDocument</code>)</h3>
+          
+          <h4><code>usePDF(docInput, options?)</code></h4>
+          <p>Asynchronously compiles a Document AST or JSX tree into PDF bytes, Blobs, and data URLs:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">const</span> { pdfBytes, blob, dataUrl, loading, error, download } = <span class="token-function">usePDF</span>(myDocument);</code></pre>
+          </div>
+
+          <h4><code>useDocument(initialDoc?)</code></h4>
+          <p>React hook managing stateful document editing with atomic undo/redo history:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">const</span> { document, addElement, updateElement, removeElement, undo, redo, canUndo, canRedo } = <span class="token-function">useDocument</span>(initialDoc);</code></pre>
+          </div>
+        </div>
+
+        <!-- DocumentViewer -->
+        <div id="react-viewer">
+          <h3><code>&lt;DocumentViewer&gt;</code> Preview Component</h3>
+          <p>Renders a 60 FPS HTML5 Canvas live preview with interactive zoom and PDF download controls:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">tsx</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { DocumentViewer } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/react'</span>;
+
+<span class="token-tag">&lt;DocumentViewer</span>
+  <span class="token-attr">document</span>={myDoc}
+  <span class="token-attr">initialScale</span>={1.0}
+  <span class="token-attr">showToolbar</span>={<span class="token-keyword">true</span>}
+  <span class="token-attr">className</span>=<span class="token-string">"rounded-lg shadow-xl"</span>
+<span class="token-tag">/&gt;</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. Document Templates -->
+      <section id="templates">
+        <h2>Document Templates Gallery</h2>
+        <p>Production-ready document template generators included in <code>doc-engine/examples</code>:</p>
+
+        <div class="gallery-grid">
+          <a href="#template-invoice" class="gallery-card">
+            <div class="gallery-badge">🧾</div>
+            <div class="gallery-title">Commercial Invoice</div>
+            <div class="gallery-meta">Itemized table, tax, summary banner</div>
+          </a>
+          <a href="#template-certificate" class="gallery-card">
+            <div class="gallery-badge">🏆</div>
+            <div class="gallery-title">Award Certificate</div>
+            <div class="gallery-meta">Landscape, double border, gold seal</div>
+          </a>
+          <a href="#template-report" class="gallery-card">
+            <div class="gallery-badge">📊</div>
+            <div class="gallery-title">Business Report</div>
+            <div class="gallery-meta">Multi-page layout, KPI grid cards</div>
+          </a>
+          <a href="#template-resume" class="gallery-card">
+            <div class="gallery-badge">💼</div>
+            <div class="gallery-title">Modern Resume</div>
+            <div class="gallery-meta">2-column layout, skills chips stack</div>
+          </a>
+        </div>
+
+        <!-- Invoice Template -->
+        <div id="template-invoice">
+          <h3>1. Commercial Invoice Template</h3>
+          <p>Generates crisp billing invoices with itemized tables and calculations:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { createInvoiceDocument } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/examples'</span>;
+
+<span class="token-keyword">const</span> doc = <span class="token-function">createInvoiceDocument</span>({
+  invoiceNumber: <span class="token-string">'INV-2026-88'</span>,
+  clientName: <span class="token-string">'Acme Global Ltd'</span>,
+  items: [
+    { description: <span class="token-string">'Frontend Engineering'</span>, quantity: 40, price: 150 },
+    { description: <span class="token-string">'Document Engine Integration'</span>, quantity: 20, price: 200 },
+  ],
+});</code></pre>
+          </div>
+        </div>
+
+        <!-- Certificate Template -->
+        <div id="template-certificate">
+          <h3>2. Award Certificate Template</h3>
+          <p>Landscape document with decorative borders and gold seal vector geometry:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { createCertificateDocument } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/examples'</span>;
+
+<span class="token-keyword">const</span> doc = <span class="token-function">createCertificateDocument</span>({
+  recipientName: <span class="token-string">'Sarah Jenkins'</span>,
+  courseTitle: <span class="token-string">'Advanced Software Architecture'</span>,
+  issueDate: <span class="token-string">'October 2026'</span>,
+});</code></pre>
+          </div>
+        </div>
+
+        <!-- Executive Report Template -->
+        <div id="template-report">
+          <h3>3. Executive Business Report Template</h3>
+          <p>Multi-page business document with running headers, footers, and KPI metric cards:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { createBusinessReportDocument } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/examples'</span>;
+
+<span class="token-keyword">const</span> doc = <span class="token-function">createBusinessReportDocument</span>({
+  companyName: <span class="token-string">'Apex Holdings'</span>,
+  quarter: <span class="token-string">'Q3 2026'</span>,
+  highlights: [<span class="token-string">'ARR grew by 42% YoY'</span>, <span class="token-string">'Net Dollar Retention reached 135%'</span>],
+});</code></pre>
+          </div>
+        </div>
+
+        <!-- Modern Resume Template -->
+        <div id="template-resume">
+          <h3>4. Modern Tech Resume Template</h3>
+          <p>Professional two-column resume layout featuring skill tags and bulleted career entries:</p>
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang-badge">typescript</span>
+              <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><code><span class="token-keyword">import</span> { createResumeDocument } <span class="token-keyword">from</span> <span class="token-string">'doc-engine/examples'</span>;
+
+<span class="token-keyword">const</span> doc = <span class="token-function">createResumeDocument</span>({
+  fullName: <span class="token-string">'David Miller'</span>,
+  title: <span class="token-string">'Principal Systems Engineer'</span>,
+  skills: [<span class="token-string">'TypeScript'</span>, <span class="token-string">'React'</span>, <span class="token-string">'Rust'</span>, <span class="token-string">'PDF Specification'</span>, <span class="token-string">'Graphics Layout'</span>],
+});</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Comparison Matrix -->
+      <section id="comparison">
+        <h2>Comparison Matrix</h2>
+        <div class="table-wrapper">
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>doc-engine</th>
+                <th>@react-pdf</th>
+                <th>jsPDF</th>
+                <th>html2pdf</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>100% Vector Output</strong></td>
+                <td>✅ Real Vector</td>
+                <td>✅ Real Vector</td>
+                <td>⚠️ Primitive</td>
+                <td>❌ Blurry Screenshot</td>
+              </tr>
+              <tr>
+                <td><strong>Searchable / Selectable Text</strong></td>
+                <td>✅ Yes</td>
+                <td>✅ Yes</td>
+                <td>⚠️ Basic</td>
+                <td>❌ No (Raster Image)</td>
+              </tr>
+              <tr>
+                <td><strong>Instant 60fps Canvas Preview</strong></td>
+                <td>✅ Yes (&lt;5ms)</td>
+                <td>❌ No (Blobs)</td>
+                <td>❌ No</td>
+                <td>❌ No</td>
+              </tr>
+              <tr>
+                <td><strong>Standalone Node / Edge Runtime</strong></td>
+                <td>✅ Yes (0 React deps)</td>
+                <td>❌ Requires React</td>
+                <td>⚠️ Node bugs</td>
+                <td>❌ Browser only</td>
+              </tr>
+              <tr>
+                <td><strong>Document AST / JSON Schema</strong></td>
+                <td>✅ Full JSON AST</td>
+                <td>❌ None</td>
+                <td>❌ None</td>
+                <td>❌ None</td>
+              </tr>
+              <tr>
+                <td><strong>File Size per Page</strong></td>
+                <td><strong>~3 KB</strong></td>
+                <td>~15 KB</td>
+                <td>~10 KB</td>
+                <td><strong>5 MB – 15 MB</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 10. Full API Reference -->
+      <section id="api-reference">
+        <h2>Full API Reference</h2>
+
+        <h3>Core Engine API (<code>doc-engine</code>)</h3>
+        <div class="table-wrapper">
+          <table class="doc-table">
+            <thead>
+              <tr><th>Function / Class</th><th>Signature / Method</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>createDocument(options?)</code></td>
+                <td><code>(options?: DocumentOptions) => DocumentBuilder</code></td>
+                <td>Instantiates a fluent document builder.</td>
+              </tr>
+              <tr>
+                <td><code>DocumentEngine</code></td>
+                <td><code>new DocumentEngine(def?: DocumentDefinition)</code></td>
+                <td>Stateful manager with CRUD methods (<code>addElement</code>, <code>updateElement</code>, <code>removeElement</code>) and history.</td>
+              </tr>
+              <tr>
+                <td><code>PdfRenderer.renderToBytes(def)</code></td>
+                <td><code>(def: DocumentDefinition) => Promise&lt;Uint8Array&gt;</code></td>
+                <td>Renders document AST into raw binary vector PDF bytes.</td>
+              </tr>
+              <tr>
+                <td><code>PdfRenderer.renderToBlob(def)</code></td>
+                <td><code>(def: DocumentDefinition) => Promise&lt;Blob&gt;</code></td>
+                <td>Renders document AST into a browser <code>Blob</code> object.</td>
+              </tr>
+              <tr>
+                <td><code>CanvasRenderer.renderToCanvas(def, canvas, options?)</code></td>
+                <td><code>(def: DocumentDefinition, canvas: HTMLCanvasElement, options?: CanvasRenderOptions) => void</code></td>
+                <td>Renders document AST onto an HTML5 2D Canvas context at 60 FPS.</td>
+              </tr>
+              <tr>
+                <td><code>SvgRenderer.renderToSvg(def, pageIndex?)</code></td>
+                <td><code>(def: DocumentDefinition, pageIndex?: number) => string</code></td>
+                <td>Exports document AST page into an SVG string.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Layout & Pagination Utilities</h3>
+        <div class="table-wrapper">
+          <table class="doc-table">
+            <thead>
+              <tr><th>Function</th><th>Signature</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>measureText(text, fontSize, fontName?)</code></td>
+                <td><code>(text: string, fontSize: number, fontName?: string) => { width: number; height: number }</code></td>
+                <td>Measures width & height using PostScript AFM metrics.</td>
+              </tr>
+              <tr>
+                <td><code>wrapText(text, maxWidth, fontSize, fontName?)</code></td>
+                <td><code>(text: string, maxWidth: number, fontSize: number, fontName?: string) => string[]</code></td>
+                <td>Wraps text into lines using word-break & binary search token fitting.</td>
+              </tr>
+              <tr>
+                <td><code>paginateElements(options)</code></td>
+                <td><code>(options: PaginateOptions) => PageDefinition[]</code></td>
+                <td>Splits a list of elements across pages with headers, footers, and page breaks.</td>
+              </tr>
+              <tr>
+                <td><code>calculateTableLayout(table)</code></td>
+                <td><code>(table: TableElement) => { columnWidths: number[]; totalHeight: number }</code></td>
+                <td>Calculates exact column widths for fractional (<code>fr</code>) or pixel specifications.</td>
+              </tr>
+              <tr>
+                <td><code>calculateGridLayout(grid)</code></td>
+                <td><code>(grid: GridElement) => { itemPositions: { x: number; y: number; width: number; height: number }[] }</code></td>
+                <td>Calculates 2D positions for grid items with row and column gaps.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Client JavaScript -->
+  <script>
+    function copyCode(btn) {
+      const codeBlock = btn.closest('.code-container').querySelector('code');
+      navigator.clipboard.writeText(codeBlock.innerText).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.style.background = '#0284c7';
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = '';
+        }, 2000);
+      });
+    }
+
+    function filterMenu() {
+      const q = document.getElementById('searchBox').value.toLowerCase();
+      const items = document.querySelectorAll('.sidebar-item');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    // Scrollspy active state
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section[id], div[id]');
+      let currentId = '';
+      sections.forEach(section => {
+        const top = section.getBoundingClientRect().top;
+        if (top <= 140) {
+          currentId = section.getAttribute('id');
+        }
+      });
+      if (currentId) {
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          const a = item.querySelector('a');
+          if (a && a.getAttribute('href') === '#' + currentId) {
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+output/
+
+# Logs
+*.log
+npm-debug.log*
+
+# System files
+.DS_Store
+Thumbs.db
