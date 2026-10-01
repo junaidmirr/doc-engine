@@ -65,8 +65,9 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
 
   doc.addText({
     text: 'INVOICE',
-    x: 430,
+    x: 372,
     y: 52,
+    width: 180,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#38bdf8',
@@ -75,8 +76,9 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
 
   doc.addText({
     text: `#${data.invoiceNumber}`,
-    x: 430,
+    x: 372,
     y: 80,
+    width: 180,
     fontSize: 12,
     color: '#94a3b8',
     align: 'right',
@@ -87,6 +89,7 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     text: 'ISSUED BY',
     x: 40,
     y: 135,
+    width: 260,
     fontSize: 9,
     fontWeight: 'bold',
     color: '#64748b',
@@ -95,6 +98,7 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     text: `${data.sender.name}\n${data.sender.email}\n${data.sender.address}`,
     x: 40,
     y: 150,
+    width: 260,
     fontSize: 11,
     lineHeight: 1.4,
     color: '#1e293b',
@@ -104,6 +108,7 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     text: 'BILLED TO',
     x: 320,
     y: 135,
+    width: 252,
     fontSize: 9,
     fontWeight: 'bold',
     color: '#64748b',
@@ -112,6 +117,7 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     text: `${data.client.name}\n${data.client.company}\n${data.client.email}\n${data.client.address}`,
     x: 320,
     y: 150,
+    width: 252,
     fontSize: 11,
     lineHeight: 1.4,
     color: '#1e293b',
@@ -122,6 +128,7 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     text: `Issue Date: ${data.issueDate}   |   Due Date: ${data.dueDate}`,
     x: 40,
     y: 220,
+    width: 532,
     fontSize: 10,
     color: '#475569',
   });
@@ -137,10 +144,10 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     fillColor: '#f1f5f9',
   });
 
-  doc.addText({ text: 'DESCRIPTION', x: 50, y: tableY + 8, fontSize: 10, fontWeight: 'bold', color: '#475569' });
-  doc.addText({ text: 'QTY', x: 330, y: tableY + 8, fontSize: 10, fontWeight: 'bold', color: '#475569', align: 'center' });
-  doc.addText({ text: 'PRICE', x: 410, y: tableY + 8, fontSize: 10, fontWeight: 'bold', color: '#475569', align: 'right' });
-  doc.addText({ text: 'TOTAL', x: 500, y: tableY + 8, fontSize: 10, fontWeight: 'bold', color: '#475569', align: 'right' });
+  doc.addText({ text: 'DESCRIPTION', x: 50, y: tableY + 8, width: 260, fontSize: 10, fontWeight: 'bold', color: '#475569' });
+  doc.addText({ text: 'QTY', x: 320, y: tableY + 8, width: 60, fontSize: 10, fontWeight: 'bold', color: '#475569', align: 'center' });
+  doc.addText({ text: 'PRICE', x: 390, y: tableY + 8, width: 80, fontSize: 10, fontWeight: 'bold', color: '#475569', align: 'right' });
+  doc.addText({ text: 'TOTAL', x: 480, y: tableY + 8, width: 82, fontSize: 10, fontWeight: 'bold', color: '#475569', align: 'right' });
 
   // Table Rows
   let rowY = tableY + 32;
@@ -159,10 +166,10 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
       });
     }
 
-    doc.addText({ text: item.description, x: 50, y: rowY + 3, fontSize: 10, color: '#1e293b' });
-    doc.addText({ text: String(item.quantity), x: 330, y: rowY + 3, fontSize: 10, color: '#1e293b', align: 'center' });
-    doc.addText({ text: `$${item.unitPrice.toFixed(2)}`, x: 410, y: rowY + 3, fontSize: 10, color: '#1e293b', align: 'right' });
-    doc.addText({ text: `$${itemTotal.toFixed(2)}`, x: 500, y: rowY + 3, fontSize: 10, fontWeight: 'bold', color: '#0f172a', align: 'right' });
+    doc.addText({ text: item.description, x: 50, y: rowY + 3, width: 260, fontSize: 10, color: '#1e293b' });
+    doc.addText({ text: String(item.quantity), x: 320, y: rowY + 3, width: 60, fontSize: 10, color: '#1e293b', align: 'center' });
+    doc.addText({ text: `$${item.unitPrice.toFixed(2)}`, x: 390, y: rowY + 3, width: 80, fontSize: 10, color: '#1e293b', align: 'right' });
+    doc.addText({ text: `$${itemTotal.toFixed(2)}`, x: 480, y: rowY + 3, width: 82, fontSize: 10, fontWeight: 'bold', color: '#0f172a', align: 'right' });
 
     // Underline divider
     doc.addShape({
@@ -181,11 +188,11 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
   // Summary Card
   const summaryY = Math.max(rowY + 20, 520);
 
-  doc.addText({ text: 'Subtotal:', x: 360, y: summaryY, fontSize: 10, color: '#64748b' });
-  doc.addText({ text: `$${subtotal.toFixed(2)}`, x: 500, y: summaryY, fontSize: 10, color: '#1e293b', align: 'right' });
+  doc.addText({ text: 'Subtotal:', x: 360, y: summaryY, width: 100, fontSize: 10, color: '#64748b' });
+  doc.addText({ text: `$${subtotal.toFixed(2)}`, x: 470, y: summaryY, width: 92, fontSize: 10, color: '#1e293b', align: 'right' });
 
-  doc.addText({ text: `Tax (${((data.taxRate ?? 0.08) * 100).toFixed(0)}%):`, x: 360, y: summaryY + 18, fontSize: 10, color: '#64748b' });
-  doc.addText({ text: `$${tax.toFixed(2)}`, x: 500, y: summaryY + 18, fontSize: 10, color: '#1e293b', align: 'right' });
+  doc.addText({ text: `Tax (${((data.taxRate ?? 0.08) * 100).toFixed(0)}%):`, x: 360, y: summaryY + 18, width: 100, fontSize: 10, color: '#64748b' });
+  doc.addText({ text: `$${tax.toFixed(2)}`, x: 470, y: summaryY + 18, width: 92, fontSize: 10, color: '#1e293b', align: 'right' });
 
   // Total Due Highlight Box
   doc.addShape({
@@ -193,13 +200,31 @@ export function createInvoiceDocument(data: InvoiceData): DocumentDefinition {
     x: 340,
     y: summaryY + 40,
     width: 232,
-    height: 40,
+    height: 42,
     fillColor: '#0284c7',
-    borderRadius: 4,
+    borderRadius: 6,
   });
 
-  doc.addText({ text: 'AMOUNT DUE', x: 355, y: summaryY + 52, fontSize: 11, fontWeight: 'bold', color: '#ffffff' });
-  doc.addText({ text: `$${total.toFixed(2)}`, x: 500, y: summaryY + 50, fontSize: 16, fontWeight: 'bold', color: '#ffffff', align: 'right' });
+  doc.addText({
+    text: 'TOTAL DUE',
+    x: 356,
+    y: summaryY + 54,
+    width: 100,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#ffffff',
+  });
+
+  doc.addText({
+    text: `$${total.toFixed(2)}`,
+    x: 456,
+    y: summaryY + 52,
+    width: 104,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    align: 'right',
+  });
 
   // Notes & Footer
   if (data.notes) {

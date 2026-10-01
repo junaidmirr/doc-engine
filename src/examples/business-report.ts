@@ -1,5 +1,6 @@
 import { DocumentDefinition } from '../types';
 import { createDocument } from '../core/document';
+import { wrapText } from '../layout/text-wrap';
 
 export interface ReportMetric {
   label: string;
@@ -40,15 +41,16 @@ export function createBusinessReportDocument(data: BusinessReportData): Document
     x: 40,
     y: 40,
     width: 532,
-    height: 60,
+    height: 75,
     fillColor: '#0f172a',
-    borderRadius: 4,
+    borderRadius: 6,
   });
 
   doc.addText({
     text: `${data.companyName.toUpperCase()}  •  ${data.quarter} ${data.year}`,
     x: 60,
     y: 52,
+    width: 490,
     fontSize: 10,
     fontWeight: 'bold',
     letterSpacing: 1,
@@ -58,7 +60,8 @@ export function createBusinessReportDocument(data: BusinessReportData): Document
   doc.addText({
     text: data.reportTitle,
     x: 60,
-    y: 68,
+    y: 70,
+    width: 490,
     fontSize: 18,
     fontWeight: 'bold',
     color: '#ffffff',
@@ -68,7 +71,8 @@ export function createBusinessReportDocument(data: BusinessReportData): Document
   doc.addText({
     text: 'EXECUTIVE OVERVIEW',
     x: 40,
-    y: 125,
+    y: 130,
+    width: 532,
     fontSize: 11,
     fontWeight: 'bold',
     color: '#334155',
@@ -77,17 +81,20 @@ export function createBusinessReportDocument(data: BusinessReportData): Document
   doc.addText({
     text: data.summaryText,
     x: 40,
-    y: 145,
+    y: 150,
     width: 532,
     fontSize: 11,
     lineHeight: 1.5,
     color: '#475569',
   });
 
-  // KPI Metrics Grid (3 Cards side-by-side)
-  const cardY = 240;
-  const cardWidth = 166;
-  const cardGap = 17;
+  // KPI Metrics Grid (dynamically sized for any metric count)
+  const cardY = 245;
+  const numCards = Math.max(1, data.metrics.length);
+  const totalGridWidth = 532;
+  const cardGap = 12;
+  const cardWidth = (totalGridWidth - (numCards - 1) * cardGap) / numCards;
+  const isCompact = numCards >= 4;
 
   data.metrics.forEach((metric, idx) => {
     const cardX = 40 + idx * (cardWidth + cardGap);
@@ -97,39 +104,49 @@ export function createBusinessReportDocument(data: BusinessReportData): Document
       x: cardX,
       y: cardY,
       width: cardWidth,
-      height: 90,
+      height: 95,
       fillColor: '#f8fafc',
       strokeColor: '#e2e8f0',
       strokeWidth: 1,
       borderRadius: 6,
     });
 
+    const labelLines = wrapText({
+      text: metric.label.toUpperCase(),
+      maxWidth: cardWidth - 20,
+      fontSize: isCompact ? 8 : 9,
+      isBold: true,
+    });
+    const labelHeight = Math.max(12, labelLines.length * (isCompact ? 10.5 : 12));
+
     doc.addText({
       text: metric.label.toUpperCase(),
-      x: cardX + 14,
-      y: cardY + 14,
-      width: cardWidth - 28,
-      fontSize: 9,
+      x: cardX + 10,
+      y: cardY + 12,
+      width: cardWidth - 20,
+      fontSize: isCompact ? 8 : 9,
       fontWeight: 'bold',
+      lineHeight: 1.25,
       color: '#64748b',
     });
 
+    const valueY = cardY + 12 + labelHeight + 4;
     doc.addText({
       text: metric.value,
-      x: cardX + 14,
-      y: cardY + 32,
-      width: cardWidth - 28,
-      fontSize: 22,
+      x: cardX + 10,
+      y: valueY,
+      width: cardWidth - 20,
+      fontSize: isCompact ? 18 : 22,
       fontWeight: 'bold',
       color: '#0f172a',
     });
 
     doc.addText({
       text: metric.change,
-      x: cardX + 14,
-      y: cardY + 64,
-      width: cardWidth - 28,
-      fontSize: 10,
+      x: cardX + 10,
+      y: cardY + 74,
+      width: cardWidth - 20,
+      fontSize: isCompact ? 9 : 10,
       fontWeight: 'bold',
       color: metric.isPositive ? '#16a34a' : '#dc2626',
     });
@@ -139,13 +156,14 @@ export function createBusinessReportDocument(data: BusinessReportData): Document
   doc.addText({
     text: 'STRATEGIC HIGHLIGHTS',
     x: 40,
-    y: 360,
+    y: 365,
+    width: 532,
     fontSize: 11,
     fontWeight: 'bold',
     color: '#334155',
   });
 
-  let bulletY = 385;
+  let bulletY = 390;
   data.highlights.forEach((item) => {
     doc.addShape({
       shapeType: 'circle',

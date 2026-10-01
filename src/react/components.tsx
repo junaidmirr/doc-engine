@@ -221,6 +221,51 @@ function parseChildElement(child: any, defaultId: string): any {
     } as ViewElement;
   }
 
+  if (isType(child.type, Table, 'Table')) {
+    const p = child.props as TableComponentProps;
+    return {
+      id: p.id || defaultId,
+      type: 'table',
+      x: p.x ?? 0,
+      y: p.y ?? 0,
+      width: p.width ?? 500,
+      height: p.height ?? 100,
+      columns: p.columns,
+      header: p.header,
+      rows: p.rows || [],
+      repeatHeaderOnNewPage: p.repeatHeaderOnNewPage,
+      borderWidth: p.borderWidth,
+      borderColor: p.borderColor,
+      cellPadding: p.cellPadding,
+      zebra: p.zebra,
+      zebraColor: p.zebraColor,
+      opacity: p.opacity ?? 1,
+      rotation: p.rotation ?? 0,
+    } as TableElement;
+  }
+
+  if (isType(child.type, Grid, 'Grid')) {
+    const p = child.props as GridComponentProps;
+    const children: any[] = [];
+    React.Children.forEach(p.children, (gc, idx) => {
+      const parsed = parseChildElement(gc, `${defaultId}_g${idx}`);
+      if (parsed) children.push(parsed);
+    });
+    return {
+      id: p.id || defaultId,
+      type: 'grid',
+      x: p.x ?? 0,
+      y: p.y ?? 0,
+      width: p.width ?? 500,
+      height: p.height ?? 100,
+      columns: p.columns ?? 2,
+      gap: p.gap ?? 8,
+      children,
+      opacity: p.opacity ?? 1,
+      rotation: p.rotation ?? 0,
+    } as GridElement;
+  }
+
   return null;
 }
 

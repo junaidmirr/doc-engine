@@ -1,4 +1,5 @@
-import { DocumentElement, ViewElement } from '../types';
+import { DocumentElement, ViewElement, TextElement } from '../types';
+import { wrapText } from './text-wrap';
 
 export interface LayoutBox {
   element: DocumentElement;
@@ -54,8 +55,32 @@ export function computeFlexLayout(
   const boxes: LayoutBox[] = [];
 
   for (const child of children) {
-    const childW = child.width || 100;
-    const childH = child.height || 20;
+    let childW = child.width;
+    let childH = child.height;
+
+    if (child.type === 'text') {
+      const textEl = child as TextElement;
+      const fSize = textEl.fontSize || 12;
+      const lHeight = fSize * (textEl.lineHeight || 1.35);
+      const availableW = Math.max(50, (view.width || 532) - padLeft - padRight);
+      const maxW = isRow
+        ? (textEl.width || 200)
+        : (textEl.width || availableW);
+      childW = maxW;
+
+      const lines = wrapText({
+        text: textEl.text || '',
+        maxWidth: maxW,
+        fontSize: fSize,
+        fontFamily: textEl.fontFamily,
+        letterSpacing: textEl.letterSpacing,
+      });
+      const measuredH = Math.max(lines.length * lHeight, fSize);
+      childH = textEl.height ? Math.max(textEl.height, measuredH) : measuredH;
+    } else {
+      childW = child.width || 100;
+      childH = child.height || 20;
+    }
 
     let posX = currentX;
     let posY = currentY;

@@ -1,4 +1,5 @@
 import { TableElement, DocumentElement, TextElement, ShapeElement, TableRow, TableCell } from '../types';
+import { wrapText } from './text-wrap';
 
 export interface ComputedTableResult {
   width: number;
@@ -75,7 +76,27 @@ export function computeTableLayout(
 
   // Process rows
   allRows.forEach((row, rowIdx) => {
-    const rowHeight = row.height ?? (row.isHeader ? 28 : 24);
+    // Dynamically calculate required row height from wrapped cell contents
+    let calculatedHeight = row.isHeader ? 28 : 24;
+    row.cells.forEach((cell, cellIdx) => {
+      const colW = colWidths[cellIdx] || 50;
+      const cellW = colW - cellPadding * 2;
+      const fSize = cell.fontSize || (row.isHeader ? 10 : 9.5);
+      const lHeight = fSize * 1.35;
+      if (typeof cell.content === 'string') {
+        const lines = wrapText({
+          text: cell.content,
+          maxWidth: cellW,
+          fontSize: fSize,
+        });
+        const needed = lines.length * lHeight + cellPadding * 2;
+        if (needed > calculatedHeight) {
+          calculatedHeight = needed;
+        }
+      }
+    });
+
+    const rowHeight = row.height ?? Math.ceil(calculatedHeight);
     const isAlt = rowIdx % 2 === 1 && !row.isHeader;
     const rowBg = row.backgroundColor || (row.isHeader ? '#f1f5f9' : isAlt && table.zebra ? (table.zebraColor || '#f8fafc') : undefined);
 
@@ -116,15 +137,25 @@ export function computeTableLayout(
 
       // Cell Content
       if (typeof cell.content === 'string') {
+        const fSize = cell.fontSize || (row.isHeader ? 10 : 9.5);
+        const lHeight = fSize * 1.35;
+        const lines = wrapText({
+          text: cell.content,
+          maxWidth: colW - cellPadding * 2,
+          fontSize: fSize,
+        });
+        const contentHeight = lines.length * lHeight;
+        const textY = currentY + Math.max(cellPadding, (rowHeight - contentHeight) / 2);
+
         elements.push({
           id: `${table.id}_cell_txt_${rowIdx}_${cellIdx}`,
           type: 'text',
           x: cellX + cellPadding,
-          y: currentY + (rowHeight - (cell.fontSize || 10) * 1.3) / 2,
+          y: textY,
           width: colW - cellPadding * 2,
-          height: rowHeight,
+          height: contentHeight,
           text: cell.content,
-          fontSize: cell.fontSize || (row.isHeader ? 10 : 9.5),
+          fontSize: fSize,
           fontWeight: cell.fontWeight || (row.isHeader ? 'bold' : 'normal'),
           color: cell.textColor || (row.isHeader ? '#334155' : '#1e293b'),
           align: cell.align || 'left',
