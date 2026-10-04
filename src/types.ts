@@ -133,6 +133,18 @@ export interface TableCell {
   padding?: number | [number, number];
 }
 
+export interface TableColumnConfig {
+  header?: string;
+  width?: number | string; // e.g. 50, '2fr', '30%'
+  align?: TextAlign;
+  fontSize?: number;
+  textColor?: string;
+  backgroundColor?: string;
+  fontWeight?: FontWeight;
+}
+
+export type TableColumnSpec = number | string | TableColumnConfig;
+
 export interface TableRow {
   id?: string;
   cells: TableCell[];
@@ -143,7 +155,7 @@ export interface TableRow {
 
 export interface TableElement extends BaseElement {
   type: 'table';
-  columns?: (number | string)[]; // e.g. [100, 200, 'auto', '2fr']
+  columns?: TableColumnSpec[]; // e.g. [100, 200, 'auto', '2fr'] or [{ header: 'Item', width: '2fr' }]
   header?: TableRow;
   rows: TableRow[];
   repeatHeaderOnNewPage?: boolean;
@@ -152,6 +164,7 @@ export interface TableElement extends BaseElement {
   cellPadding?: number;
   zebra?: boolean;
   zebraColor?: string;
+  autoWrap?: boolean;
 }
 
 export interface GridElement extends BaseElement {

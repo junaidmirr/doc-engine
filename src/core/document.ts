@@ -12,9 +12,14 @@ import {
   PageDimensions,
   PageOrientation,
   DocumentMetadata,
+  FontWeight,
+  FontStyle,
 } from '../types';
 import { resolvePageDimensions } from './page';
 import { PdfRenderer } from '../renderers/pdf/pdf-renderer';
+import { deepClone } from '../utils/clone';
+import { StackBuilder, StackOptions } from './stack';
+import { defaultFontManager } from '../fonts/font-manager';
 
 let elementIdCounter = 1;
 
@@ -50,6 +55,16 @@ export class DocumentBuilder {
         },
       ],
     };
+  }
+
+  public registerFont(
+    name: string,
+    data: Uint8Array,
+    weight: FontWeight = 'normal',
+    style: FontStyle = 'normal'
+  ): this {
+    defaultFontManager.registerFont(name, data, weight, style);
+    return this;
   }
 
   public setMetadata(metadata: Partial<DocumentMetadata>): this {
@@ -237,8 +252,14 @@ export class DocumentBuilder {
     return this.addElement(element, options.pageId);
   }
 
+  public addStack(options: StackOptions, fn: (stack: StackBuilder) => void): this {
+    const stack = new StackBuilder(this, options);
+    fn(stack);
+    return this;
+  }
+
   public toDefinition(): DocumentDefinition {
-    return JSON.parse(JSON.stringify(this.def));
+    return deepClone(this.def);
   }
 
   public toJson(): string {

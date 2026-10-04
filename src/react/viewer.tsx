@@ -1,25 +1,69 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { DocumentDefinition } from '../types';
+import { DocumentDefinition, PageDefinition, DocumentElement, TextElement } from '../types';
 import { CanvasRenderer } from '../renderers/canvas/canvas-renderer';
 import { PdfRenderer } from '../renderers/pdf/pdf-renderer';
 import { extractDocumentDefinition } from './components';
+import { computeTableLayout } from '../layout/table-layout';
 
 export interface DocumentViewerProps {
   document: DocumentDefinition | React.ReactElement;
   initialScale?: number;
   showToolbar?: boolean;
+  enableTextSelection?: boolean;
   className?: string;
   onElementClick?: (elementId: string) => void;
   selectedElementId?: string;
 }
 
 /**
- * Interactive React viewer for instantaneous client-side document preview and export.
+ * Extracts all text elements (including nested cell text from tables) for transparent selection overlay.
+ */
+function extractPageTextElements(page: PageDefinition): TextElement[] {
+  const result: TextElement[] = [];
+
+  function processElement(el: DocumentElement, parentX = 0, parentY = 0) {
+    if (el.type === 'text') {
+      result.push({
+        ...el,
+        x: (el.x ?? 0) + parentX,
+        y: (el.y ?? 0) + parentY,
+      });
+    } else if (el.type === 'table') {
+      const computed = computeTableLayout(el, parentX, parentY);
+      for (const child of computed.elements) {
+        if (child.type === 'text') {
+          result.push(child);
+        }
+      }
+    } else if (el.type === 'view' && el.children) {
+      for (const child of el.children) {
+        processElement(child, parentX + (el.x ?? 0), parentY + (el.y ?? 0));
+      }
+    } else if (el.type === 'grid' && el.children) {
+      for (const child of el.children) {
+        processElement(child, parentX + (el.x ?? 0), parentY + (el.y ?? 0));
+      }
+    }
+  }
+
+  if (page && page.elements) {
+    for (const el of page.elements) {
+      processElement(el, 0, 0);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Interactive React viewer for instantaneous client-side document preview,
+ * transparent text selection overlay, and vector PDF export.
  */
 export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   document,
   initialScale = 1.0,
   showToolbar = true,
+  enableTextSelection = true,
   className = '',
   onElementClick,
   selectedElementId,
@@ -37,6 +81,11 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
 
   const totalPages = docDef.pages.length || 1;
   const activePage = docDef.pages[currentPageIndex] || docDef.pages[0];
+
+  const pageTextElements = useMemo(() => {
+    if (!enableTextSelection || !activePage) return [];
+    return extractPageTextElements(activePage);
+  }, [activePage, enableTextSelection]);
 
   const renderCanvas = useCallback(() => {
     if (!canvasRef.current || !activePage) return;
@@ -77,7 +126,6 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
     const clickX = (e.clientX - rect.left) / scale;
     const clickY = (e.clientY - rect.top) / scale;
 
-    // Hit test elements from top z-index downwards
     const sorted = [...activePage.elements].sort((a, b) => (b.zIndex ?? 0) - (a.zIndex ?? 0));
     for (const el of sorted) {
       if (
@@ -91,6 +139,9 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
       }
     }
   };
+
+  const pageWidth = activePage?.width || 612;
+  const pageHeight = activePage?.height || 792;
 
   return (
     <div
@@ -112,7 +163,7 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             width: '100%',
-            maxWidth: '800px',
+            maxWidth: `${pageWidth * scale}px`,
             marginBottom: '12px',
             padding: '8px 12px',
             background: '#ffffff',
@@ -204,11 +255,11 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
             disabled={isExporting}
             style={{
               padding: '6px 12px',
-              backgroundColor: '#2563eb',
+              backgroundColor: '#0284c7',
               color: '#ffffff',
               border: 'none',
               borderRadius: '4px',
-              fontWeight: 500,
+              fontWeight: 600,
               cursor: isExporting ? 'wait' : 'pointer',
             }}
           >
@@ -217,14 +268,16 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
         </div>
       )}
 
-      {/* Canvas Viewport */}
+      {/* Canvas Viewport with Overlay */}
       <div
         style={{
+          position: 'relative',
           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
           borderRadius: '4px',
           overflow: 'hidden',
           backgroundColor: '#ffffff',
-          lineHeight: 0,
+          width: `${pageWidth * scale}px`,
+          height: `${pageHeight * scale}px`,
         }}
       >
         <canvas
@@ -232,9 +285,57 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
           onClick={handleCanvasClick}
           style={{
             display: 'block',
+            width: `${pageWidth * scale}px`,
+            height: `${pageHeight * scale}px`,
             cursor: onElementClick ? 'pointer' : 'default',
           }}
         />
+
+        {/* Transparent Text Selection Overlay */}
+        {enableTextSelection && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              userSelect: 'text',
+              WebkitUserSelect: 'text',
+            }}
+          >
+            {pageTextElements.map((el) => {
+              const fontSizePx = el.fontSize * scale;
+              const lineHeightPx = fontSizePx * (el.lineHeight || 1.35);
+
+              return (
+                <span
+                  key={el.id}
+                  style={{
+                    position: 'absolute',
+                    left: `${el.x * scale}px`,
+                    top: `${el.y * scale}px`,
+                    width: `${el.width * scale}px`,
+                    fontSize: `${fontSizePx}px`,
+                    fontFamily: el.fontFamily || 'Helvetica, Arial, sans-serif',
+                    fontWeight: el.fontWeight || 'normal',
+                    fontStyle: el.fontStyle || 'normal',
+                    textAlign: el.align || 'left',
+                    lineHeight: `${lineHeightPx}px`,
+                    color: 'transparent',
+                    pointerEvents: 'auto',
+                    whiteSpace: 'pre-wrap',
+                    display: 'block',
+                    cursor: 'text',
+                  }}
+                >
+                  {el.text}
+                </span>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

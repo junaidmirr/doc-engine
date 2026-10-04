@@ -10,6 +10,7 @@ import { resolvePageDimensions } from './page';
 import { PdfRenderer } from '../renderers/pdf/pdf-renderer';
 import { CanvasRenderer } from '../renderers/canvas/canvas-renderer';
 import { DocumentHistory } from './history';
+import { deepClone } from '../utils/clone';
 
 export class DocumentEngine {
   private doc: DocumentDefinition;
@@ -131,7 +132,7 @@ export class DocumentEngine {
         this.history.push(this.doc);
         const newId = `${el.id}_copy_${Date.now()}`;
         const copy: DocumentElement = {
-          ...JSON.parse(JSON.stringify(el)),
+          ...deepClone(el),
           id: newId,
           x: (el.x || 0) + 15,
           y: (el.y || 0) + 15,

@@ -3,8 +3,11 @@ export * from './types';
 
 // Core Document API
 export { DocumentBuilder, createDocument } from './core/document';
+export { StackBuilder } from './core/stack';
+export type { StackOptions } from './core/stack';
 export { DocumentEngine } from './core/engine';
 export { DocumentHistory } from './core/history';
+export { deepClone } from './utils/clone';
 export {
   PAGE_SIZES,
   resolvePageDimensions,

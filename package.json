@@ -1,6 +1,6 @@
 {
   "name": "@worklabs05/doc-engine",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Modern open-source document rendering and layout engine for React and TypeScript producing real vector PDFs",
   "author": "Resumagic Open Source Initiative",
   "license": "MIT",

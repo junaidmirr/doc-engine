@@ -76,8 +76,15 @@ export class FontManager {
     return this.customFonts.get(name.toLowerCase());
   }
 
-  public hasCustomFont(name: string): boolean {
-    return this.customFonts.has(name.toLowerCase());
+  public async registerFontFromUrl(
+    name: string,
+    url: string,
+    weight: FontWeight = 'normal',
+    style: FontStyle = 'normal'
+  ): Promise<void> {
+    const res = await fetch(url);
+    const buf = await res.arrayBuffer();
+    this.registerFont(name, new Uint8Array(buf), weight, style);
   }
 }
 
