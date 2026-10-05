@@ -201,4 +201,4 @@ const pdfBytes = await PdfRenderer.renderToBytes(cert);
 
 ## ⚖️ License
 
-MIT License © Resumagic Open Source Initiative.
+MIT License © WorkLabs Open Source Initiative.
